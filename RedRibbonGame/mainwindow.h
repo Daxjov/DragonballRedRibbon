@@ -6,7 +6,10 @@
 #include <QList>
 #include <fstream>
 #include <iostream>
+#include <QKeyEvent>
 #include "muros.h"
+#include "obstaculos.h"
+#include "personajes.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -22,11 +25,17 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void keyPressEvent(QKeyEvent *event);
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene;
     short x,y,ancho,alto;
     QList <Muros*> muros;
+    QList <Obstaculos*>obstaculos;
+    QList <Personajes*>personajes;
     void cargarMuros(const QString& nombreArchivo);
+    void cargarObjetos(const QString& nombreArchivo);
+    void cargarPersonajes(const QString& nombreArchivo);
 };
 #endif // MAINWINDOW_H

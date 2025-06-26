@@ -25,6 +25,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
         muros.h muros.cpp
         Sprite.qrc
+        obstaculos.h obstaculos.cpp
+        personajes.h personajes.cpp
 
 
     )
