@@ -5,6 +5,7 @@
 #include <QGraphicsItem>
 #include <QPainter>
 #include <QPixmap>
+#include <QTimer>
 
 class Personajes : public QObject, public QGraphicsItem
 {
@@ -15,6 +16,7 @@ public:
     Personajes(short x,short y,short posx, short posy,short ancho, short alto);
     short x,y,posx,posy,ancho,alto,vel;
     QPixmap *sprite;
+    QTimer *timer;
     QRectF boundingRect()const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
     void moverUp();
@@ -24,6 +26,9 @@ public:
 
 
 signals:
+public slots:
+    void renewGoku();
+
 };
 
 #endif // PERSONAJES_H

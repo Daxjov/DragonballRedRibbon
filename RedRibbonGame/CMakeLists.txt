@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         Sprite.qrc
         obstaculos.h obstaculos.cpp
         personajes.h personajes.cpp
+        nivel.h nivel.cpp
 
 
     )

@@ -13,18 +13,19 @@ Obstaculos::Obstaculos(short x, short y,short posx, short posy, short ancho, sho
     this->ancho=ancho;
     this->alto=alto;
     sprite=new QPixmap(":/Imagenes/SpritesaUsar.png");
+    setPos(posx,posy);
 
 }
 
 QRectF Obstaculos::boundingRect() const
 {
-    return QRectF(posx,posy,ancho,alto);
+    return QRectF(0,0,ancho,alto);
 }
 
 void Obstaculos::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     QRectF posicionSprite(x,y,ancho,alto);
-    QRectF dibuja(posx,posy,ancho,alto);
+    QRectF dibuja(0,0,ancho,alto);
     painter->drawPixmap(dibuja,*sprite,posicionSprite);
 }
 
