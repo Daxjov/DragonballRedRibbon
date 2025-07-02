@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <QKeyEvent>
+#include <QTimer>
 #include "muros.h"
 #include "obstaculos.h"
 #include "personajes.h"
@@ -28,10 +29,12 @@ public:
 
 private slots:
     void keyPressEvent(QKeyEvent *event);
+    void disparo();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
     short x,y,ancho,alto;
+    QTimer *timer;
     QList <Muros*> muros;
     QList <Obstaculos*>obstaculos;
     QList <Personajes*>personajes;
@@ -42,6 +45,8 @@ private:
     void cargarObjetos(const QString& nombreArchivo);
     void cargarPersonajes(const QString& nombreArchivo);
     void cargarCorazones(const QString& nombreArchivo);
-    bool evaluarColision();
+    bool evaluarColisionGokuMuros();
+    bool evaluarColisionGokuObstaculos();
+    bool evaluarColisionGokuSoldado();
 };
 #endif // MAINWINDOW_H
