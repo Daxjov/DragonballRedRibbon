@@ -34,6 +34,7 @@ private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
     short x,y,ancho,alto;
+    bool gokuinvulnerable;
     QTimer *timer;
     QList <Muros*> muros;
     QList <Obstaculos*>obstaculos;
@@ -48,5 +49,6 @@ private:
     bool evaluarColisionGokuMuros();
     bool evaluarColisionGokuObstaculos();
     bool evaluarColisionGokuSoldado();
+    void energia();
 };
 #endif // MAINWINDOW_H

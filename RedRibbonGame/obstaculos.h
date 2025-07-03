@@ -6,6 +6,7 @@
 #include <QPainter>
 #include <QPixmap>
 
+
 class Obstaculos : public QObject,public QGraphicsItem
 {
     Q_OBJECT

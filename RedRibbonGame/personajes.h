@@ -14,7 +14,7 @@ class Personajes : public QObject, public QGraphicsItem
 public:
     explicit Personajes(QObject *parent = nullptr);
     Personajes(short x,short y,short posx, short posy,short ancho, short alto);
-    short x,y,posx,posy,ancho,alto,vel;
+    short x,y,posx,posy,ancho,alto,vel,energia;
     QPixmap *sprite;
     QTimer *timer;
     QRectF boundingRect()const;

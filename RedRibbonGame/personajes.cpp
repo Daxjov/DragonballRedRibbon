@@ -10,6 +10,7 @@ Personajes::Personajes(QObject *parent)
     ancho=25;
     alto=41;
     vel=2;
+    energia=100;
     sprite=new QPixmap(":/Imagenes/SpritesaUsar.png");
     timer=new QTimer();
     timer->start(800);
@@ -27,6 +28,7 @@ Personajes::Personajes(short x, short y, short posx, short posy, short ancho, sh
     this->ancho=ancho;
     this->alto=alto;
     vel=2;
+    energia=100;
     sprite=new QPixmap(":/Imagenes/SpritesaUsar.png");
     setPos(posx,posy);
 }
