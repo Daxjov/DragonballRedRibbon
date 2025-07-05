@@ -30,12 +30,14 @@ public:
 private slots:
     void keyPressEvent(QKeyEvent *event);
     void disparo();
+    void animarSoldados();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
     short x,y,ancho,alto;
-    bool gokuinvulnerable;
+    bool gokuInvulnerable;
     QTimer *timer;
+    QTimer *timer1;
     QList <Muros*> muros;
     QList <Obstaculos*>obstaculos;
     QList <Personajes*>personajes;
@@ -48,7 +50,9 @@ private:
     void cargarCorazones(const QString& nombreArchivo);
     bool evaluarColisionGokuMuros();
     bool evaluarColisionGokuObstaculos();
-    bool evaluarColisionGokuSoldado();
     void energia();
+    void energiaSoldados();
+
+
 };
 #endif // MAINWINDOW_H
