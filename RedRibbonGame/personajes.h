@@ -12,8 +12,8 @@ class Personajes : public QObject, public QGraphicsItem
     Q_INTERFACES(QGraphicsItem)
 public:
     explicit Personajes(QObject *parent = nullptr);
-    Personajes(short x,short y,short posx, short posy,short ancho, short alto);
-    short x,y,posx,posy,ancho,alto,vel,energia;
+    Personajes(short x,short y,short posx, short posy,short ancho, short alto,short movimiento);
+    short x,y,posx,posy,ancho,alto,vel,energia,movimiento;
     QPixmap *sprite;
     QRectF boundingRect()const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);
@@ -25,6 +25,10 @@ public:
     void sacarPoderLeft();
     void sacarPoderRight();
     void restablecerGoku();
+    void moverUpSold();
+    void moverDownSold();
+    void moverRightSold();
+    void moverLeftSold();
 
 
 signals:

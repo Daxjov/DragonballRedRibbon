@@ -30,7 +30,7 @@ public:
 private slots:
     void keyPressEvent(QKeyEvent *event);
     void disparo();
-    void animarSoldados();
+   void animarSoldados();
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
@@ -50,6 +50,7 @@ private:
     void cargarCorazones(const QString& nombreArchivo);
     bool evaluarColisionGokuMuros();
     bool evaluarColisionGokuObstaculos();
+    bool evaluarColisionGokuPersonajes();
     void energia();
     void energiaSoldados();
 

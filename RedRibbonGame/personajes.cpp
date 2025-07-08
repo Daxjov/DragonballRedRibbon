@@ -9,14 +9,14 @@ Personajes::Personajes(QObject *parent)
     posy=630;
     ancho=25;
     alto=41;
-    vel=2;
+    vel=3;
     energia=100;
     sprite=new QPixmap(":/Imagenes/SpritesaUsar.png");
     setPos(posx,posy);
 
 }
 
-Personajes::Personajes(short x, short y, short posx, short posy, short ancho, short alto)
+Personajes::Personajes(short x, short y, short posx, short posy, short ancho, short alto,short movimiento)
 {
     this->x=x;
     this->y=y;
@@ -26,6 +26,7 @@ Personajes::Personajes(short x, short y, short posx, short posy, short ancho, sh
     this->alto=alto;
     vel=2;
     energia=100;
+    this->movimiento=movimiento;
     sprite=new QPixmap(":/Imagenes/SpritesaUsar.png");
     setPos(posx,posy);
 }
@@ -116,6 +117,30 @@ void Personajes::restablecerGoku()
     x=0;
     y=0;
     ancho=25;
+}
+
+void Personajes::moverUpSold()
+{
+    posy=posy-vel;
+    setPos(posx,posy);
+}
+
+void Personajes::moverDownSold()
+{
+    posy=posy+vel;
+    setPos(posx,posy);
+}
+
+void Personajes::moverRightSold()
+{
+    posx=posx+vel;
+    setPos(posx,posy);
+}
+
+void Personajes::moverLeftSold()
+{
+    posx=posx-vel;
+    setPos(posx,posy);
 }
 
 

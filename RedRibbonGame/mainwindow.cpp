@@ -10,10 +10,10 @@ MainWindow::MainWindow(QWidget *parent)
     ui->graphicsView->setScene(scene1);
     scene1->setBackgroundBrush(Qt::black);
     timer=new QTimer();
-    timer->start(200);
+    timer->start(50);
     connect(timer,&QTimer::timeout,this,&MainWindow::disparo);
     timer1=new QTimer();
-    timer1->start(200);
+    timer1->start(100);
     connect(timer1,&QTimer::timeout,this,&MainWindow::animarSoldados);
     niveles=new Nivel;
     goku=new Personajes;
@@ -21,8 +21,8 @@ MainWindow::MainWindow(QWidget *parent)
     niveles->setPos(720,80);
     scene1->addItem(goku);
     cargarMuros("Nivel1.txt");
-    cargarObjetos("Obstaculos.txt");
     cargarPersonajes("Personajes.txt");
+    cargarObjetos("Obstaculos.txt");
     cargarCorazones("Nivel.txt");
     gokuInvulnerable=false;
 
@@ -50,11 +50,19 @@ void MainWindow::cargarObjetos(const QString &nombreArchivo)
     if(!archivo.is_open()){
         std::cerr<<"Archivo no abrio";
     }
-    short x,y,posx,posy,w,h;
-    while(archivo>>x>>y>>posx>>posy>>w>>h){
-        obstaculos.append(new Obstaculos(x,y,posx,posy,w,h));
-        scene1->addItem(obstaculos.back());
+    short x,y,posx,posy,w,h,movi,indiceS;
+    while(archivo>>x>>y>>posx>>posy>>w>>h>>movi>>indiceS){
+        if(indiceS>=0 && indiceS<personajes.count()){
+            Personajes *soldado=personajes[indiceS];
+            Obstaculos *bala=new Obstaculos(x,y,posx,posy,w,h,movi,soldado);
+            obstaculos.append(bala);
+            scene1->addItem(bala);
+        }
+        else {
+            std::cerr << "Índice fuera de rango: " << indiceS << std::endl;
+        }
     }
+
     archivo.close();
 }
 
@@ -64,9 +72,9 @@ void MainWindow::cargarPersonajes(const QString &nombreArchivo)
     if(!archivo.is_open()){
         std::cerr<<"Archivo no abrio";
     }
-    short x,y,posx,posy,w,h;
-    while(archivo>>x>>y>>posx>>posy>>w>>h){
-        personajes.append(new Personajes(x,y,posx,posy,w,h));
+    short x,y,posx,posy,w,h,movi;
+    while(archivo>>x>>y>>posx>>posy>>w>>h>>movi){
+        personajes.append(new Personajes(x,y,posx,posy,w,h,movi));
         scene1->addItem(personajes.back());
     }
     archivo.close();
@@ -102,8 +110,17 @@ bool MainWindow::evaluarColisionGokuMuros()
 
 bool MainWindow::evaluarColisionGokuObstaculos()
 {
-    for(int i=1;i<obstaculos.count();++i){
+    for(int i=0;i<obstaculos.count();++i){
         if(goku->collidesWithItem(obstaculos[i]) || obstaculos[i]->collidesWithItem(goku))
+            return true;
+    }
+    return false;
+}
+
+bool MainWindow::evaluarColisionGokuPersonajes()
+{
+    for (int i = 0; i < personajes.count(); ++i) {
+        if(goku->collidesWithItem(personajes[i]) || personajes[i]->collidesWithItem(goku))
             return true;
     }
     return false;
@@ -137,6 +154,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             energia();
 
         }
+
     }
     else if(event->key()==Qt::Key_D){
         goku->restablecerGoku();
@@ -178,69 +196,301 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 
 void MainWindow::disparo()
 {
+    for (int i = 0; i < obstaculos.size(); ++i) {
+        Obstaculos *obst=obstaculos[i];
+        switch (obst->movimiento) {
+        case 0:{
+            obst->moverLeft();
+            obst->moverDown();
+            if(obst->posx<460){
+                obst->posx=710;
+                obst->posy=410;
+            }
 
-    obstaculos[0]->moverLeft();
-    obstaculos[0]->moverDown();
-    if(obstaculos[0]->posx<460){
-        obstaculos[0]->posx=710;
-        obstaculos[0]->posy=410;
+            break;
+        }
+        case 1:{
+            obst->moverRight();
+            obst->moverDown();
+            if(obst->posx>425){
+                obst->posx=175;
+                obst->posy=410;
+            }
+            break;
+        }
+        case 2:{
+            obst->moverRight();
+            obst->moverUp();
+            if(obst->posx>410){
+                obst->posx=320;
+                obst->posy=500;
+            }
+            break;
+        }
+        case 3:{
+            obst->moverLeft();
+            obst->moverUp();
+            if(obst->posx<430){
+                obst->posx=530;
+                obst->posy=500;
+            }
+            break;
+        }
+        case 4:{
+            obst->moverRight();
+            if(obst->posx>800){
+                obst->posx=320;
+
+            }
+            break;
+        }
+        case 5:{
+            obst->moverLeft();
+            if(obst->posx<100){
+                obst->posx=530;
+
+            }
+            break;
+        }
+        case 6:{
+            obst->moverDown();
+            if(obst->posy>580){
+                obst->posy=460;
+            }
+            break;
+        }
+
+        case 7:{
+            obst->moverDown();
+            if(obst->posy>580){
+                obst->posy=460;
+            }
+            break;
+        }
+        case 8:{
+            obst->moverRight();
+            if(obst->posx>800){
+                obst->posx=230;
+            }
+            break;
+        }
+        case 9:{
+            obst->moverLeft();
+            if(obst->posx<100){
+                obst->posx=610;
+            }
+            break;
+        }
+        case 10:{
+            obst->moverRight();
+            obst->moverDown();
+            if(obst->posx>500){
+                obst->posx=330;
+                obst->posy=210;
+            }
+            break;
+        }
+        case 11:{
+            obst->moverLeft();
+            obst->moverDown();
+            if(obst->posx<440){
+                obst->posx=560;
+                obst->posy=210;
+            }
+            break;
+        }
+            default:
+            break;
+        }
+            if(evaluarColisionGokuObstaculos()){
+                energia();
+            }
     }
-
-    obstaculos[1]->moverRight();
-    obstaculos[1]->moverDown();
-    if(obstaculos[1]->posx>425){
-        obstaculos[1]->posx=175;
-        obstaculos[1]->posy=410;
-    }
-
-
-    obstaculos[5]->moverRight();
-    obstaculos[5]->moverUp();
-    if(obstaculos[5]->posx>410){
-        obstaculos[5]->posx=320;
-        obstaculos[5]->posy=500;
-    }
-
-    obstaculos[4]->moverLeft();
-    obstaculos[4]->moverUp();
-    if(obstaculos[4]->posx<430){
-        obstaculos[4]->posx=530;
-        obstaculos[4]->posy=500;
-    }
-    if(evaluarColisionGokuObstaculos()){
-        energia();
-    }
-
 }
 
 void MainWindow::animarSoldados()
 {
-    for (int i = 0; i < personajes.count(); ++i) {
-
-        if(personajes[i]->x==0 && personajes[i]->y==85){
-            personajes[i]->x=27;
-            personajes[i]->y=85;
-
+    for (int i = 0; i < personajes.size(); ++i) {
+        Personajes *pers=personajes[i];
+        switch (pers->movimiento) {
+        case 0:{
+            break;
         }
-        if(personajes[i]->x==28 && personajes[i]->y==85){
-            personajes[i]->x=0;
-            personajes[i]->y=85;
+        case 1:{
+            if(pers->x==0 && pers->y==85 ){
+                pers->moverRightSold();
+                }
+            if(pers->posx>300){
+                    pers->x=27;
+            }
+            if(pers->x==27){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<100){
+                pers->x=0;
+            }
+            if(pers->x==0){
+                pers->moverRightSold();
+            }
 
+             break;
         }
-        if (personajes[i]->x==53 && personajes[i]->y==85){
-            personajes[i]->x=81;
-            personajes[i]->y=85;
+        case 2:{
+            if(pers->x==28 && pers->y==85 ){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<580){
+                pers->x=0;
+            }
+            if(pers->x==0){
+                pers->moverRightSold();
+            }
+            if(pers->posx>700){
+                pers->x=28;
+            }
+            if(pers->x==28){
+                pers->moverLeftSold();
+            }
+            break;
+        }
+        case 3:{
+            if(pers->x==53 && pers->y==85 ){
+                pers->moverRightSold();
+            }
+            if(pers->posx>90){
+                pers->x=81;
+            }
+            if(pers->x==81){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<50){
+                pers->x=53;
+            }
+            if(pers->x==53){
+                pers->moverRightSold();
+            }
+            break;
+        }
+        case 4:{
+            if(pers->x==81 && pers->y==85 ){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<780){
+                pers->x=53;
+            }
+            if(pers->x==53){
+                pers->moverRightSold();
+            }
+            if(pers->posx>820){
+                pers->x=81;
+            }
+            if(pers->x==81){
+                pers->moverLeftSold();
+            }
+            break;
         }
 
-        if(personajes[i]->x==81 && personajes[i]->y==85){
-            personajes[i]->x=53;
-            personajes[i]->y=85;
-
+        case 5:{
+            if(pers->x==0 && pers->y==85 ){
+                pers->moverRightSold();
+            }
+            if(pers->posx>260){
+                pers->x=28;
+            }
+            if(pers->x==28){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<180){
+                pers->x=0;
+            }
+            if(pers->x==0){
+                pers->moverRightSold();
+            }
+            break;
         }
-        personajes[i]->update();
+
+        case 6:{
+            if(pers->x==28 && pers->y==85 ){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<580){
+                pers->x=0;
+            }
+            if(pers->x==0){
+                pers->moverRightSold();
+            }
+            if(pers->posx>630){
+                pers->x=28;
+            }
+            if(pers->x==28){
+                pers->moverLeftSold();
+            }
+            break;
+        }
+
+        case 7:{
+            if(pers->x==53 && pers->y==85 ){
+                pers->moverRightSold();
+            }
+            if(pers->posx>380){
+                pers->x=81;
+            }
+            if(pers->x==81){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<320){
+                pers->x=53;
+            }
+            if(pers->x==53){
+                pers->moverRightSold();
+            }
+            break;
+        }
+        case 8:{
+            if(pers->x==81 && pers->y==85 ){
+                pers->moverLeftSold();
+            }
+            if(pers->posx<500){
+                pers->x=53;
+            }
+            if(pers->x==53){
+                pers->moverRightSold();
+            }
+            if(pers->posx>560){
+                pers->x=81;
+            }
+            if(pers->x==81){
+                pers->moverLeftSold();
+            }
+            break;
+        }
+        case 9:{
+            if(pers->energia==100 && evaluarColisionGokuPersonajes()){
+                pers->x=0;
+                pers->y=130;
+                goku->moverDown();
+            }
+            if(pers->energia=50 && evaluarColisionGokuPersonajes()){
+                pers->x=34;
+                pers->y=130;
+                goku->moverDown();
+            }
+            if(pers->energia==0 && evaluarColisionGokuPersonajes()){
+                pers->x=67;
+                pers->y=130;
+            }
+            break;
+        }
+
+        default:
+            break;
+        }
 
     }
 }
+
+
+
 
 
 void MainWindow::energia()
@@ -274,19 +524,31 @@ void MainWindow::energiaSoldados()
 {
     for(int e=0;e<personajes.count();++e){
         if(goku->collidesWithItem(personajes[e])){
-            personajes[e]->energia-=50;
+            personajes[e]->energia-=5;
         }
         if(personajes[e]->energia<=0){
-            scene1->removeItem(personajes[e]);
-            personajes.removeAt(e);
-            e--;
+            Personajes *soldadoMuerto=personajes[e];
+
+        for (int i = 0; i<obstaculos.count();++i) {
+            if(obstaculos[i]->soldado==soldadoMuerto){
+                scene1->removeItem(obstaculos[i]);
+                delete obstaculos[i];
+                obstaculos.removeAt(i);
+                i--;
+            }
         }
+        scene1->removeItem(soldadoMuerto);
+        delete soldadoMuerto;
+        personajes.removeAt(e);
+        e--;
         }
-    for (int i = 0; i<obstaculos.count();++i) {
-        if(goku->collidesWithItem(obstaculos[i])){
-            scene1->removeItem(obstaculos[i]);
-            obstaculos.removeAt(i);
-            i--;
+
+        for (int i = 0; i < obstaculos.count(); ++i) {
+            if(goku->collidesWithItem(obstaculos[i])){
+                scene1->removeItem(obstaculos[i]);
+                obstaculos.removeAt(i);
+            }
+
         }
 
     }
