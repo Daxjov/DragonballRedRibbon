@@ -18,7 +18,6 @@ public:
     Nivel(short x,short y,short posx,short posy,short ancho,short alto);
     short x,y,posx,posy,ancho,alto;
     short energia,vida;
-    QTimer *timer;
     QPixmap *sprite;
     QRectF boundingRect()const;
     void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget);

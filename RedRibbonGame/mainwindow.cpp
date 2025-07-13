@@ -34,7 +34,7 @@ void MainWindow::cargarMuros(const QString& nombreArchivo)
 {
     std::ifstream archivo(nombreArchivo.toStdString());
     if(!archivo.is_open()){
-        std::cerr<<"Archivo no abrio";
+        std::cerr<<"Archivo no abrio1";
     }
     short x,y,w,h;
     while(archivo>>x>>y>>w>>h){
@@ -48,7 +48,7 @@ void MainWindow::cargarObjetos(const QString &nombreArchivo)
 {
     std::ifstream archivo(nombreArchivo.toStdString());
     if(!archivo.is_open()){
-        std::cerr<<"Archivo no abrio";
+        std::cerr<<"Archivo no abrio2";
     }
     short x,y,posx,posy,w,h,movi,indiceS;
     while(archivo>>x>>y>>posx>>posy>>w>>h>>movi>>indiceS){
@@ -70,7 +70,7 @@ void MainWindow::cargarPersonajes(const QString &nombreArchivo)
 {
     std::ifstream archivo(nombreArchivo.toStdString());
     if(!archivo.is_open()){
-        std::cerr<<"Archivo no abrio";
+        std::cerr<<"Archivo no abrio3";
     }
     short x,y,posx,posy,w,h,movi;
     while(archivo>>x>>y>>posx>>posy>>w>>h>>movi){
@@ -84,7 +84,7 @@ void MainWindow::cargarCorazones(const QString &nombreArchivo)
 {
     std::ifstream archivo(nombreArchivo.toStdString());
     if(!archivo.is_open()){
-        std::cerr<<"Archivo no abrio";
+        std::cerr<<"Archivo no abrio4";
     }
     short x,y,posx,posy,w,h;
     while(archivo>>x>>y>>posx>>posy>>w>>h){
@@ -529,6 +529,7 @@ void MainWindow::energiaSoldados()
         if(personajes[e]->energia<=0){
             Personajes *soldadoMuerto=personajes[e];
 
+
         for (int i = 0; i<obstaculos.count();++i) {
             if(obstaculos[i]->soldado==soldadoMuerto){
                 scene1->removeItem(obstaculos[i]);
@@ -540,6 +541,7 @@ void MainWindow::energiaSoldados()
         scene1->removeItem(soldadoMuerto);
         delete soldadoMuerto;
         personajes.removeAt(e);
+        nivel2();
         e--;
         }
 
@@ -552,6 +554,37 @@ void MainWindow::energiaSoldados()
         }
 
     }
+}
+
+void MainWindow::nivel2()
+{
+    scene1->clear();
+    muros.clear();
+    obstaculos.clear();
+    personajes.clear();
+    corazones.clear();
+
+
+    scene1->setSceneRect(0,0,900,750);
+    scene1->setBackgroundBrush(Qt::black);
+
+    goku=new Personajes(770,550);
+    niveles = new Nivel;
+    scene1->addItem(niveles);
+    scene1->addItem(goku);
+    goku->setPos(770,550);
+    niveles->setPos(880,80);
+
+
+    cargarMuros("Muros2.txt");
+    cargarCorazones("Nivel2.txt");
+    cargarObjetos("Obstaculos2.txt");
+    cargarPersonajes("Personajes2.txt");
+
+    gokuInvulnerable=false;
+
+
+
 }
 
 

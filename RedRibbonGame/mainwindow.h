@@ -53,7 +53,7 @@ private:
     bool evaluarColisionGokuPersonajes();
     void energia();
     void energiaSoldados();
-
+    void nivel2();
 
 };
 #endif // MAINWINDOW_H
