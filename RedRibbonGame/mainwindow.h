@@ -36,7 +36,7 @@ private slots:
 private:
     Ui::MainWindow *ui;
     QGraphicsScene *scene1;
-    short x,y,ancho,alto;
+    short x,y,ancho,alto,nivelActual;
     bool gokuInvulnerable;
     QTimer *timer;
     QTimer *timer1;
@@ -62,7 +62,6 @@ private:
     void energiaPuertas();
     void energiaBlack();
     void nivel2();
-    void siguienteNivel();
     void destruPuerta();
 
 
