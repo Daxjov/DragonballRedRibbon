@@ -25,14 +25,30 @@ MainWindow::MainWindow(QWidget *parent)
     scene1->addItem(niveles);
     niveles->setPos(720,80);
     scene1->addItem(goku);
+    audioOutput=new QAudioOutput(this);
+    player=new QMediaPlayer(this);
+    player->setAudioOutput(audioOutput);
+    audioOutput->setVolume(0.7);
+    player->setSource(QUrl("qrc:/Audio/GolpeGoku.wav"));
+    audioFondo= new QAudioOutput(this);
+    audioFondo->setVolume(0.5);
+    musicaFondo= new QMediaPlayer(this);
+    musicaFondo->setAudioOutput(audioFondo);
+    musicaFondo->setSource(QUrl("qrc:/Audio/Dragon-Ball-Soundtrack.wav"));
+    connect(musicaFondo, &QMediaPlayer::mediaStatusChanged, this, [=](QMediaPlayer::MediaStatus status){
+        if (status == QMediaPlayer::EndOfMedia) {
+            musicaFondo->setPosition(0);
+            musicaFondo->play();
+        }
+    });
+
+    musicaFondo->play();
     cargarMuros("Nivel1.txt");
     cargarPersonajes("Personajes.txt");
     cargarObjetos("Obstaculos.txt");
     cargarCorazones("Nivel.txt");
     gokuInvulnerable=false;
-
-
-    }
+}
 
 
 
@@ -140,6 +156,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     if(event->key()==Qt::Key_W){
         goku->restablecerGoku();
         goku->moverUpGoku();
+        nivel3();
         }
         if(evaluarColisionGokuMuros()){
             goku->moverDownGoku();
@@ -151,6 +168,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     else if(event->key()==Qt::Key_S){
         goku->restablecerGoku();
         goku->moverDownGoku();
+        nivel3();
         if(evaluarColisionGokuMuros()){
             goku->moverUpGoku();
         }
@@ -162,6 +180,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     else if(event->key()==Qt::Key_D){
         goku->restablecerGoku();
         goku->moverRightGoku();
+        nivel3();
         if(evaluarColisionGokuMuros()){
             goku->moverLeftGoku();
         }
@@ -172,6 +191,7 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
     else if(event->key()==Qt::Key_A){
         goku->restablecerGoku();
         goku->moverLeftGoku();
+        nivel3();
         if(evaluarColisionGokuMuros()){
             goku->moverRightGoku();
         }
@@ -184,6 +204,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
              energiaSoldados();
              destruPuerta();
              energiaBlack();
+             player->setPosition(0);
+             player->play();
 
         }
         else if(event->key()==Qt::Key_X){
@@ -192,6 +214,9 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             energiaSoldados();
             destruPuerta();
             energiaBlack();
+            player->setPosition(0);
+            player->play();
+
 
 
         }
@@ -200,10 +225,8 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
             energiaSoldados();
             destruPuerta();
             energiaBlack();
-        }
-
-        else if(event->key()==Qt::Key_T){
-            nivel2();
+            player->setPosition(0);
+            player->play();
         }
 
 }
@@ -253,7 +276,7 @@ void MainWindow::disparo()
         case 4:{
             obst->moverRight();
             if(obst->posx>700){
-                obst->posx=320;
+                obst->posx=100;
 
             }
             break;
@@ -284,7 +307,7 @@ void MainWindow::disparo()
         case 8:{
             obst->moverRight();
             if(obst->posx>750){
-                obst->posx=230;
+                obst->posx=180;
             }
             break;
         }
@@ -331,7 +354,7 @@ void MainWindow::disparo()
         case 14:{
         obst->moverRight();
         obst->moverDown();
-        if(obst->posx>350){
+        if(obst->posx>420){
             obst->posx=80;
             obst->posy=100;
         }
@@ -349,7 +372,7 @@ void MainWindow::disparo()
         case 16:{
             obst->moverRight();
             obst->moverUp();
-            if(obst->posx>350){
+            if(obst->posx>440){
                 obst->posx=100;
                 obst->posy=440;
             }
@@ -364,6 +387,35 @@ void MainWindow::disparo()
             }
             break;
         }
+        case 18:{
+            if(!obst->iniciado){
+                obst->calcularVelocidad();
+                obst->iniciado=true;
+               }
+            obst->calcularPosicion();
+            obst->actualizarVelocidad();
+            if (obst->posx > 540) {
+                obst->posx = 80;
+                obst->posy = 260;
+                obst->iniciado = false;
+            }
+            break;
+        }
+        case 19:{
+            if(!obst->iniciado){
+                obst->calcularVelocidad();
+                obst->iniciado=true;
+            }
+            obst->calcularPosicionInversa();
+            obst->actualizarVelocidad();
+            if (obst->posx<130) {
+                obst->posx = 775;
+                obst->posy = 260;
+                obst->iniciado = false;
+            }
+            break;
+        }
+
 
             default:
             break;
@@ -577,6 +629,7 @@ void MainWindow::animarSoldados()
 
 void MainWindow::energia()
 {
+    if(!niveles)return;
     if(gokuInvulnerable) return;
     goku->energia-=20;
     goku->setOpacity(1);
@@ -589,9 +642,14 @@ void MainWindow::energia()
         }
     if(corazones.empty()){
         scene1->setBackgroundBrush(Qt::red);
-        scene1->addText("GAMEOVER");
+        texto=scene1->addText("GAMEOVER");
+        texto->setDefaultTextColor(Qt::black);
+        texto->setFont(QFont("Arial",10,QFont::Bold));
+        texto->setScale(5);
+        texto->setPos(250,400);
         scene1->removeItem(niveles);
         delete niveles;
+        niveles=nullptr;
     }
     gokuInvulnerable=true;
     goku->setOpacity(0.5);
@@ -684,7 +742,7 @@ void MainWindow::nivel2()
     corazones.clear();
     scene1->setSceneRect(0,0,900,750);
     scene1->setBackgroundBrush(Qt::darkCyan);
-    black=new Personajes(0,181,500,200);
+    black=new Personajes(0,181,400,200);
     scene1->addItem(black);
     timer2=new QTimer();
     timer2->start(50);
@@ -716,6 +774,20 @@ void MainWindow::destruPuerta()
     if(puerta2 && goku->collidesWithItem(puerta2)){
         puerta2->actualizaPuerta();
         energiaPuertas();
+
+    }
+}
+
+void MainWindow::nivel3()
+{
+    if(nivelActual!=2)return;
+    if(!personajes.isEmpty() || black)return;
+    if(personajes.isEmpty()&& !black){
+        texto=scene1->addText("¡Felicidades lo Lograste!");
+        texto->setPos(55,120);
+        texto->setDefaultTextColor(Qt::darkMagenta);
+        texto->setScale(5);
+        texto->setFont(QFont("Arial",10,QFont::Bold));
 
     }
 }

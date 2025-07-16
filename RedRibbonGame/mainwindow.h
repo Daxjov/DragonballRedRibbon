@@ -9,6 +9,8 @@
 #include <QKeyEvent>
 #include <QTimer>
 #include <QtGlobal>
+#include <QMediaPlayer>
+#include <QAudioOutput>
 #include "muros.h"
 #include "obstaculos.h"
 #include "personajes.h"
@@ -50,6 +52,11 @@ private:
     Personajes *puerta1;
     Personajes *puerta2;
     Personajes *black;
+    QGraphicsTextItem *texto;
+    QMediaPlayer *player;
+    QAudioOutput *audioOutput;
+    QMediaPlayer *musicaFondo;
+    QAudioOutput *audioFondo;
     void cargarMuros(const QString& nombreArchivo);
     void cargarObjetos(const QString& nombreArchivo);
     void cargarPersonajes(const QString& nombreArchivo);
@@ -63,6 +70,7 @@ private:
     void energiaBlack();
     void nivel2();
     void destruPuerta();
+    void nivel3();
 
 
 };
