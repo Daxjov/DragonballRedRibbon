@@ -40,6 +40,7 @@ private:
     QGraphicsScene *scene1;
     short x,y,ancho,alto,nivelActual;
     bool gokuInvulnerable;
+    bool juegoActivo;
     QTimer *timer;
     QTimer *timer1;
     QTimer *timer2;
